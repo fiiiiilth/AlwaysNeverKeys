@@ -1,0 +1,142 @@
+package AlwaysNeverKeys;
+
+import basemod.BaseMod;
+import basemod.ModLabel;
+import basemod.ModLabeledToggleButton;
+import basemod.ModPanel;
+import basemod.interfaces.PostInitializeSubscriber;
+import com.badlogic.gdx.graphics.Texture;
+import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
+import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Properties;
+
+@SpireInitializer
+public class AlwaysNeverKeys implements
+        PostInitializeSubscriber {
+
+  public static Properties alwaysNeverKeysProp = new Properties();
+  public static final String PROP_ANK_SETTINGS = "keyMode";
+
+  public static HashMap<String, ArrayList<ModLabeledToggleButton>> keyModeRadioButtons = new HashMap<>();
+
+  public AlwaysNeverKeys() {
+    BaseMod.subscribe(this);
+
+    alwaysNeverKeysProp.setProperty(PROP_ANK_SETTINGS, "0");
+
+    try {
+      SpireConfig config = new SpireConfig("alwaysNeverKeys", "alwaysNeverKeysConf", alwaysNeverKeysProp);
+      config.load();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static void initialize() {
+    new AlwaysNeverKeys();
+  }
+
+  @Override
+  public void receivePostInitialize() {
+    Texture modBadge = new Texture("ankResources/modBadge.png");
+
+    ModPanel settingsPanel = new ModPanel();
+
+    BaseMod.registerModBadge(modBadge, "AlwaysNeverKeys", "fiiiiilth", "", settingsPanel);
+
+    ModLabel keyModeText = new ModLabel("Key mode:", 350f, 700f, settingsPanel, (me) -> {});
+    settingsPanel.addUIElement(keyModeText);
+
+    keyModeSettingsRadioButton(settingsPanel, 375f, 666f, PROP_ANK_SETTINGS);
+  }
+
+  public void keyModeSettingsRadioButton(ModPanel settingsPanel, float x, float y, String keySettings) {
+
+    int keyMode = -1;
+
+    try {
+      SpireConfig config = new SpireConfig("alwaysNeverKeys", "alwaysNeverKeysConf", alwaysNeverKeysProp);
+      config.load();
+      keyMode = config.getInt(keySettings);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    ModLabeledToggleButton radioBtnOff = new ModLabeledToggleButton("Disable AlwaysNeverKeys.", x, y - 10f, Settings.CREAM_COLOR, FontHelper.charDescFont,
+            keyMode == 0, settingsPanel, (label) -> {
+    }, (button) -> {
+      try {
+        SpireConfig config = new SpireConfig("alwaysNeverKeys", "alwaysNeverKeysConf", alwaysNeverKeysProp);
+        config.setInt(keySettings, 0);
+        config.save();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      updateButtonStates();
+    });
+    settingsPanel.addUIElement(radioBtnOff);
+
+    ModLabeledToggleButton radioBtnAlways = new ModLabeledToggleButton("Start each game with all act four keys.",
+            x, y - 50f, Settings.CREAM_COLOR, FontHelper.charDescFont,
+            keyMode == 1, settingsPanel, (label) -> {
+    }, (button) -> {
+      try {
+        SpireConfig config = new SpireConfig("alwaysNeverKeys", "alwaysNeverKeysConf", alwaysNeverKeysProp);
+        config.setInt(keySettings, 1);
+        config.save();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+      updateButtonStates();
+    });
+    settingsPanel.addUIElement(radioBtnAlways);
+
+    ModLabeledToggleButton radioBtnNever = new ModLabeledToggleButton("Never encounter the act four keys.",
+            x, y - 90f, Settings.CREAM_COLOR, FontHelper.charDescFont,
+            keyMode == 2, settingsPanel, (label) -> {
+    }, (button) -> {
+      try {
+        SpireConfig config = new SpireConfig("alwaysNeverKeys", "alwaysNeverKeysConf", alwaysNeverKeysProp);
+        config.setInt(keySettings, 2);
+        config.save();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+      updateButtonStates();
+    });
+    settingsPanel.addUIElement(radioBtnNever);
+
+    ArrayList<ModLabeledToggleButton> btns = new ArrayList<>();
+    btns.add(radioBtnOff);
+    btns.add(radioBtnAlways);
+    btns.add(radioBtnNever);
+    keyModeRadioButtons.put(keySettings, btns);
+  }
+
+  public void updateButtonStates() {
+    for (String s : keyModeRadioButtons.keySet()) {
+      int count = 0;
+      int keyMode = -1;
+
+      try {
+        SpireConfig config = new SpireConfig("alwaysNeverKeys", "alwaysNeverKeysConf", alwaysNeverKeysProp);
+        config.load();
+        keyMode = config.getInt(s);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+      for (ModLabeledToggleButton button : keyModeRadioButtons.get(s)) {
+        button.toggle.enabled = (count == keyMode);
+        count++;
+      }
+    }
+  }
+}

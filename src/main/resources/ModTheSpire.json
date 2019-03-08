@@ -1,0 +1,10 @@
+{
+  "modid": "alwaysneverkeys",
+  "name": "AlwaysNeverKeys",
+  "author_list": ["fiiiiilth"],
+  "description": "Choose to either always start with the fourth act keys, or never encounter them.",
+  "version": "0.0.1",
+  "dependencies": ["basemod"],
+  "sts_version": "01-23-2019",
+  "mts_version": "3.8.3"
+}
