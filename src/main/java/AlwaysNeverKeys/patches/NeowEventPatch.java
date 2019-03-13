@@ -33,14 +33,13 @@ public class NeowEventPatch {
     }
 
     if(keyMode == 1) {
-
       AbstractDungeon.topLevelEffects.add(new ObtainKeyEffect(ObtainKeyEffect.KeyColor.BLUE));
       AbstractDungeon.topLevelEffects.add(new ObtainKeyEffect(ObtainKeyEffect.KeyColor.GREEN));
       AbstractDungeon.topLevelEffects.add(new ObtainKeyEffect(ObtainKeyEffect.KeyColor.RED));
       refreshSuperElite();
     } else if(keyMode == 2) {
-
       Settings.isFinalActAvailable = false;
+      AbstractDungeon.topPanel.setPlayerName();
       refreshSuperElite();
     }
   }
