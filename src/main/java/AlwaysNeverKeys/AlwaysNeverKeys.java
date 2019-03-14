@@ -4,20 +4,26 @@ import basemod.BaseMod;
 import basemod.ModLabel;
 import basemod.ModLabeledToggleButton;
 import basemod.ModPanel;
+import basemod.interfaces.EditStringsSubscriber;
 import basemod.interfaces.PostInitializeSubscriber;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
+import com.megacrit.cardcrawl.localization.UIStrings;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
 @SpireInitializer
 public class AlwaysNeverKeys implements
-        PostInitializeSubscriber {
+        PostInitializeSubscriber,
+        EditStringsSubscriber {
 
   public static Properties alwaysNeverKeysProp = new Properties();
   public static final String PROP_ANK_SETTINGS = "keyMode";
@@ -43,19 +49,24 @@ public class AlwaysNeverKeys implements
 
   @Override
   public void receivePostInitialize() {
+    UIStrings uiStrings = CardCrawlGame.languagePack.getUIString("ank:ConfigText");
+    String[] STRINGS = uiStrings.TEXT;
+
     Texture modBadge = new Texture("ankResources/modBadge.png");
 
     ModPanel settingsPanel = new ModPanel();
 
     BaseMod.registerModBadge(modBadge, "AlwaysNeverKeys", "fiiiiilth", "", settingsPanel);
 
-    ModLabel keyModeText = new ModLabel("Key mode:", 350f, 700f, settingsPanel, (me) -> {});
+    ModLabel keyModeText = new ModLabel(STRINGS[0], 350f, 700f, settingsPanel, (me) -> {});
     settingsPanel.addUIElement(keyModeText);
 
     keyModeSettingsRadioButton(settingsPanel, 375f, 666f, PROP_ANK_SETTINGS);
   }
 
-  public void keyModeSettingsRadioButton(ModPanel settingsPanel, float x, float y, String keySettings) {
+  private void keyModeSettingsRadioButton(ModPanel settingsPanel, float x, float y, String keySettings) {
+    UIStrings uiStrings = CardCrawlGame.languagePack.getUIString("ank:ConfigText");
+    String[] STRINGS = uiStrings.TEXT;
 
     int keyMode = -1;
 
@@ -67,7 +78,7 @@ public class AlwaysNeverKeys implements
       e.printStackTrace();
     }
 
-    ModLabeledToggleButton radioBtnOff = new ModLabeledToggleButton("Disable AlwaysNeverKeys.", x, y - 10f, Settings.CREAM_COLOR, FontHelper.charDescFont,
+    ModLabeledToggleButton radioBtnOff = new ModLabeledToggleButton(STRINGS[1], x, y - 10f, Settings.CREAM_COLOR, FontHelper.charDescFont,
             keyMode == 0, settingsPanel, (label) -> {
     }, (button) -> {
       try {
@@ -81,7 +92,7 @@ public class AlwaysNeverKeys implements
     });
     settingsPanel.addUIElement(radioBtnOff);
 
-    ModLabeledToggleButton radioBtnAlways = new ModLabeledToggleButton("Start each game with all act four keys.",
+    ModLabeledToggleButton radioBtnAlways = new ModLabeledToggleButton(STRINGS[2],
             x, y - 50f, Settings.CREAM_COLOR, FontHelper.charDescFont,
             keyMode == 1, settingsPanel, (label) -> {
     }, (button) -> {
@@ -97,7 +108,7 @@ public class AlwaysNeverKeys implements
     });
     settingsPanel.addUIElement(radioBtnAlways);
 
-    ModLabeledToggleButton radioBtnNever = new ModLabeledToggleButton("Never encounter the act four keys.",
+    ModLabeledToggleButton radioBtnNever = new ModLabeledToggleButton(STRINGS[3],
             x, y - 90f, Settings.CREAM_COLOR, FontHelper.charDescFont,
             keyMode == 2, settingsPanel, (label) -> {
     }, (button) -> {
@@ -138,5 +149,25 @@ public class AlwaysNeverKeys implements
         count++;
       }
     }
+  }
+
+  @Override
+  public void receiveEditStrings() {
+    String loc = "eng";
+
+    switch (Settings.language) {
+      case RUS:
+        loc = "rus";
+        break;
+    }
+
+    loadLangString("eng");
+    loadLangString(loc);
+  }
+
+  private void loadLangString(String language) {
+    String path = "ankResources/localization/" + language + "/UIStrings.json";
+
+    BaseMod.loadCustomStringsFile(UIStrings.class, path);
   }
 }

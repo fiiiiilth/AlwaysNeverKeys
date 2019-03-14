@@ -1,0 +1,10 @@
+{
+  "ank:ConfigText": {
+    "TEXT": [
+      "Key mode:",
+      "Disable AlwaysNeverKeys.",
+      "Start each run with all of the act four keys.",
+      "Never encounter the act four keys."
+    ]
+  }
+}
