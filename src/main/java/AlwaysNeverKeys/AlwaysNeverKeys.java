@@ -58,10 +58,10 @@ public class AlwaysNeverKeys implements
 
     BaseMod.registerModBadge(modBadge, "AlwaysNeverKeys", "fiiiiilth", "", settingsPanel);
 
-    ModLabel keyModeText = new ModLabel(STRINGS[0], 350f, 700f, settingsPanel, (me) -> {});
+    ModLabel keyModeText = new ModLabel(STRINGS[0], 370f, 810f, settingsPanel, (me) -> {});
     settingsPanel.addUIElement(keyModeText);
 
-    keyModeSettingsRadioButton(settingsPanel, 375f, 666f, PROP_ANK_SETTINGS);
+    keyModeSettingsRadioButton(settingsPanel, 370f, 760f, PROP_ANK_SETTINGS);
   }
 
   private void keyModeSettingsRadioButton(ModPanel settingsPanel, float x, float y, String keySettings) {
